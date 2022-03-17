@@ -91,7 +91,7 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     private fun isAppEnabled(packageName: String, result: Result) {
-        var appStatus = false
+        val appStatus: Boolean
         try {
             val appInfo: ApplicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             appStatus = appInfo.enabled

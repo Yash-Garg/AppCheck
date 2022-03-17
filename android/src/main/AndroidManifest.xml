@@ -1,3 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="dev.yashgarg.appcheck">
+    package="dev.yashgarg.appcheck">
+
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
 </manifest>
