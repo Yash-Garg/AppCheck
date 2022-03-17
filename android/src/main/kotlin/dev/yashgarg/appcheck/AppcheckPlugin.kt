@@ -1,6 +1,7 @@
 package dev.yashgarg.appcheck
 
 import android.content.Context
+import android.content.Intent
 import kotlin.collections.*
 import android.content.pm.PackageManager
 import android.content.pm.PackageInfo
@@ -40,10 +41,10 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
                 uriSchema = call.argument<String>("uri").toString()
                 isAppEnabled(uriSchema, result)
             }
-//            "launchApp" -> {
-//                uriSchema = call.argument("uri").toString()
-//                launchApp(uriSchema, result)
-//            }
+            "launchApp" -> {
+                uriSchema = call.argument<String>("uri").toString()
+                launchApp(uriSchema, result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -99,6 +100,20 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
             return
         }
         result.success(appStatus)
+    }
+
+    private fun launchApp(packageName: String, result: Result) {
+        val info = getAppPackageInfo(packageName)
+        if (info != null) {
+            val launchIntent: Intent? = context.packageManager.getLaunchIntentForPackage(packageName)
+            if (launchIntent != null) {
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(launchIntent)
+                result.success(null)
+                return
+            }
+        }
+        result.error("400", "App not found $packageName", null)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
