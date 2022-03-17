@@ -3,11 +3,11 @@ import UIKit
 
 public class SwiftAppcheckPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "appcheck", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "dev.yashgarg/appcheck", binaryMessenger: registrar.messenger())
         let instance = SwiftAppcheckPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
-    
+
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         var uriSchema = ""
         let arguments = call.arguments as? NSDictionary
@@ -24,12 +24,12 @@ public class SwiftAppcheckPlugin: NSObject, FlutterPlugin {
             break
         }
     }
-    
+
     public func checkAvailability (uri: String) -> Bool {
         let url = URL(string: uri)
         return UIApplication.shared.canOpenURL(url!)
     }
-    
+
     public func launchApp (uri: String, result: @escaping FlutterResult) {
         let url = URL(string: uri)
         if (checkAvailability(uri: uri)) {
@@ -38,5 +38,5 @@ public class SwiftAppcheckPlugin: NSObject, FlutterPlugin {
         }
         result(false)
     }
-    
+
 }
