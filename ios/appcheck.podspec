@@ -4,10 +4,10 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'appcheck'
-  s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.version          = '1.0.0'
+  s.summary          = 'Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.'
   s.description      = <<-DESC
-A new flutter plugin project.
+  Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.
                        DESC
   s.homepage         = 'http://github.com/Yash-Garg/Appcheck'
   s.license          = { :file => '../LICENSE' }

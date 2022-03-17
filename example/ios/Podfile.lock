@@ -1,5 +1,5 @@
 PODS:
-  - appcheck (0.0.1):
+  - appcheck (1.0.0):
     - Flutter
   - Flutter (1.0.0)
 
