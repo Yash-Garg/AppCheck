@@ -1,5 +1,7 @@
 # Flutter AppCheck Plugin
 
+[![Pub](https://img.shields.io/pub/v/appcheck.svg)](https://pub.dartlang.org/packages/appcheck)
+
 A Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.
 
 This plugin is inspired by the plugin [Discontinued AppAvailability Plugin](https://pub.dev/packages/flutter_appavailability).
