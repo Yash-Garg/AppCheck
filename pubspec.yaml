@@ -22,3 +22,5 @@ flutter:
       android:
         package: dev.yashgarg.appcheck
         pluginClass: AppcheckPlugin
+      ios:
+        pluginClass: AppcheckPlugin
