@@ -1,15 +1,18 @@
-# appcheck
+# Flutter AppCheck Plugin
 
-A new flutter plugin project.
+A Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.
 
-## Getting Started
+This plugin is inspired by the plugin [Discontinued AppAvailability Plugin](https://pub.dev/packages/flutter_appavailability).
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+#### NOTE - Everything has been mostly rewritten in Kotlin and updated to latest null-safety standards.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+First, add `appcheck` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
+## Methods available
+- `checkAvailability(String uri)`
+- `getInstalledApps()` (only for **Android**)
+- `isAppEnabled(String uri)` (only for **Android**)
+- `launchApp(String uri)`
+
+Check out [Example](https://github.com/Yash-Garg/appcheck/blob/develop/example/lib/main.dart).

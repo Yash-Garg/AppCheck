@@ -64,7 +64,7 @@ class _AppCheckExampleState extends State<AppCheckExample> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: const Text('App Availability Example App')),
+        appBar: AppBar(title: const Text('AppCheck Example App')),
         body: installedApps != null && installedApps!.isNotEmpty
             ? ListView.builder(
                 itemCount: installedApps!.length,
