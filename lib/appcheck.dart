@@ -7,20 +7,20 @@ import 'package:flutter/services.dart';
 class AppInfo {
   final String? appName;
   final String packageName;
-  final String? versionCode;
   final String? versionName;
+  final bool? isSystemApp;
 
   AppInfo({
     this.appName,
     required this.packageName,
-    this.versionCode,
     this.versionName,
+    this.isSystemApp,
   });
 
   @override
   String toString() {
     if (Platform.isAndroid) {
-      return 'App - $appName, Version - $versionCode';
+      return 'App - $appName, Package - $packageName, Version - $versionName, System App - $isSystemApp';
     } else if (Platform.isIOS) {
       return 'App - $packageName';
     } else {
@@ -51,8 +51,8 @@ class AppCheck {
       return AppInfo(
         appName: app["app_name"],
         packageName: app["package_name"],
-        versionCode: app["versionCode"],
         versionName: app["version_name"],
+        isSystemApp: app["system_app"],
       );
     } else if (Platform.isIOS) {
       bool appAvailable =
@@ -81,8 +81,8 @@ class AppCheck {
           list.add(AppInfo(
             appName: app["app_name"],
             packageName: app["package_name"],
-            versionCode: app["versionCode"],
             versionName: app["version_name"],
+            isSystemApp: app["system_app"],
           ));
         }
       }

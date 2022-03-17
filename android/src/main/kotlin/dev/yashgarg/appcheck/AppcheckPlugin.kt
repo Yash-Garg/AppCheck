@@ -50,28 +50,23 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private val installedApps: MutableList<Map<String, Any>>
         get() {
             val packageManager: PackageManager = context.packageManager
-            val apps = packageManager.getInstalledPackages(0)
-            val installedApps: MutableList<Map<String, Any>> = ArrayList(apps.size)
-            val systemAppMask =
-                ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
-            for (pInfo in apps) {
-                if (pInfo.applicationInfo.flags and systemAppMask != 0) {
-                    continue
-                }
-                val map = convertPackageInfoToJson(pInfo)
+            val packages = packageManager.getInstalledPackages(0)
+            val installedApps: MutableList<Map<String, Any>> = ArrayList(packages.size)
+            for (pkg in packages) {
+                val map = convertPackageInfoToJson(pkg)
                 installedApps.add(map)
             }
             return installedApps
         }
 
     private fun convertPackageInfoToJson(info: PackageInfo): Map<String, Any> {
-        val map: MutableMap<String, Any> = HashMap()
-        map["app_name"] =
+        val app: MutableMap<String, Any> = HashMap()
+        app["app_name"] =
             info.applicationInfo.loadLabel(context.packageManager).toString()
-        map["package_name"] = info.packageName
-        map["version_code"] = info.versionCode.toString()
-        map["version_name"] = info.versionName
-        return map
+        app["package_name"] = info.packageName
+        app["version_name"] = info.versionName
+        app["system_app"] = info.applicationInfo.flags == ApplicationInfo.FLAG_SYSTEM
+        return app
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
