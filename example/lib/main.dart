@@ -45,6 +45,10 @@ class _AppCheckExampleState extends State<AppCheckExample> {
             ? debugPrint('$package enabled')
             : debugPrint('$package disabled'),
       );
+
+      _installedApps?.sort(
+        (a, b) => a.appName!.toLowerCase().compareTo(b.appName!.toLowerCase()),
+      );
     } else if (Platform.isIOS) {
       // iOS doesn't allow to get installed apps.
       _installedApps = iOSApps;
@@ -72,9 +76,9 @@ class _AppCheckExampleState extends State<AppCheckExample> {
                   final app = installedApps![index];
 
                   return ListTile(
-                    title: Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: Text(app.appName ?? app.packageName),
+                    title: Text(app.appName ?? app.packageName),
+                    subtitle: Text(
+                      (app.isSystemApp ?? false) ? 'System App' : 'User App',
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.open_in_new),
