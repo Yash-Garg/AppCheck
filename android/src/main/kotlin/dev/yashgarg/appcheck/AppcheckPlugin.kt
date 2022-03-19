@@ -33,16 +33,16 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         val uriSchema: String
         when (call.method) {
             "checkAvailability" -> {
-                uriSchema = call.argument<String>("uri")
+                uriSchema = call.argument<String>("uri").toString()
                 checkAvailability(uriSchema, result)
             }
             "getInstalledApps" -> result.success(installedApps)
             "isAppEnabled" -> {
-                uriSchema = call.argument<String>("uri")
+                uriSchema = call.argument<String>("uri").toString()
                 isAppEnabled(uriSchema, result)
             }
             "launchApp" -> {
-                uriSchema = call.argument<String>("uri")
+                uriSchema = call.argument<String>("uri").toString()
                 launchApp(uriSchema, result)
             }
             else -> result.notImplemented()

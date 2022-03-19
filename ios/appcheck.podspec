@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'appcheck'
-  s.version          = '1.0.0'
+  s.version          = '1.0.2'
   s.summary          = 'Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.'
   s.description      = <<-DESC
   Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.
