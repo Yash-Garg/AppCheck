@@ -2,17 +2,17 @@ package dev.yashgarg.appcheck
 
 import android.content.Context
 import android.content.Intent
-import kotlin.collections.*
-import android.content.pm.PackageManager
-import android.content.pm.PackageInfo
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import androidx.annotation.NonNull
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.*
+import kotlin.collections.*
 
 /** AppcheckPlugin */
 class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
@@ -33,16 +33,16 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         val uriSchema: String
         when (call.method) {
             "checkAvailability" -> {
-                uriSchema = call.argument<String>("uri").toString()
+                uriSchema = call.argument<String>("uri")
                 checkAvailability(uriSchema, result)
             }
             "getInstalledApps" -> result.success(installedApps)
             "isAppEnabled" -> {
-                uriSchema = call.argument<String>("uri").toString()
+                uriSchema = call.argument<String>("uri")
                 isAppEnabled(uriSchema, result)
             }
             "launchApp" -> {
-                uriSchema = call.argument<String>("uri").toString()
+                uriSchema = call.argument<String>("uri")
                 launchApp(uriSchema, result)
             }
             else -> result.notImplemented()
@@ -74,7 +74,7 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         val pm = context.packageManager
         try {
             return pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES)
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: NameNotFoundException) {
             e.message?.let { Log.e("getAppPackageInfo ($uri)", it) }
         }
         return null
@@ -82,11 +82,12 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun convertPackageInfoToJson(info: PackageInfo): Map<String, Any> {
         val app: MutableMap<String, Any> = HashMap()
+
         app["app_name"] =
             info.applicationInfo.loadLabel(context.packageManager).toString()
         app["package_name"] = info.packageName
         app["version_name"] = info.versionName
-        app["system_app"] = info.applicationInfo.flags != ApplicationInfo.FLAG_SYSTEM
+        app["system_app"] = (info.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
         return app
     }
 
@@ -95,7 +96,7 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         try {
             val appInfo: ApplicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             appStatus = appInfo.enabled
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: NameNotFoundException) {
             result.error("400", "${e.message} $packageName", e)
             return
         }
@@ -105,7 +106,8 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private fun launchApp(packageName: String, result: Result) {
         val info = getAppPackageInfo(packageName)
         if (info != null) {
-            val launchIntent: Intent? = context.packageManager.getLaunchIntentForPackage(packageName)
+            val launchIntent: Intent? =
+                context.packageManager.getLaunchIntentForPackage(packageName)
             if (launchIntent != null) {
                 launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(launchIntent)
