@@ -2,7 +2,7 @@
 
 - Rewritten in Kotlin and with Null-Safety.
 
-## 1.0.2
+## 1.0.3
 
 - Fixed system app logic for Android
-- Updated min iOS version to 10.0
+- Fixed opening URLs on earlier iOS versions

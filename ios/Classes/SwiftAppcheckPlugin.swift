@@ -33,7 +33,11 @@ public class SwiftAppcheckPlugin: NSObject, FlutterPlugin {
     public func launchApp (uri: String, result: @escaping FlutterResult) {
         let url = URL(string: uri)
         if (checkAvailability(uri: uri)) {
-            UIApplication.shared.open(url!)
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url!)
+            } else {
+                UIApplication.shared.openURL(url!)
+            }
             result(true)
         }
         result(false)
