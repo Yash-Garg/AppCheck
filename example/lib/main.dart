@@ -4,13 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:appcheck/appcheck.dart';
 
-void main() => runApp(const AppCheckExample());
-
 class AppCheckExample extends StatefulWidget {
   const AppCheckExample({Key? key}) : super(key: key);
 
   @override
-  _AppCheckExampleState createState() => _AppCheckExampleState();
+  State<AppCheckExample> createState() => _AppCheckExampleState();
 }
 
 class _AppCheckExampleState extends State<AppCheckExample> {
@@ -29,12 +27,12 @@ class _AppCheckExampleState extends State<AppCheckExample> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> getApps() async {
-    List<AppInfo>? _installedApps;
+    List<AppInfo>? installedApps;
 
     if (Platform.isAndroid) {
       const package = "com.google.android.apps.maps";
-      _installedApps = await AppCheck.getInstalledApps();
-      debugPrint(_installedApps.toString());
+      installedApps = await AppCheck.getInstalledApps();
+      debugPrint(installedApps.toString());
 
       await AppCheck.checkAvailability(package).then(
         (app) => debugPrint(app.toString()),
@@ -46,12 +44,12 @@ class _AppCheckExampleState extends State<AppCheckExample> {
             : debugPrint('$package disabled'),
       );
 
-      _installedApps?.sort(
+      installedApps?.sort(
         (a, b) => a.appName!.toLowerCase().compareTo(b.appName!.toLowerCase()),
       );
     } else if (Platform.isIOS) {
       // iOS doesn't allow to get installed apps.
-      _installedApps = iOSApps;
+      installedApps = iOSApps;
 
       await AppCheck.checkAvailability("calshow://").then(
         (app) => debugPrint(app.toString()),
@@ -59,7 +57,7 @@ class _AppCheckExampleState extends State<AppCheckExample> {
     }
 
     setState(() {
-      installedApps = _installedApps;
+      installedApps = installedApps;
     });
   }
 
