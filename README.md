@@ -19,6 +19,24 @@ First, add `appcheck` as a [dependency in your pubspec.yaml file](https://flutte
 - `isAppEnabled(String uri)` (only for **Android**)
 - `launchApp(String uri)`
 
+
+## Permissions
+ If you want to use the getInstalledApps() function, you need the QUERY_ALL_PACKAGES permission.
+
+ ```
+<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+ ```
+
+ If you only want to check certain apps and you know the packageName, add them via querie in AndroidManifest.xml.
+
+ ```
+<queries>
+    <package android:name="com.google.android.apps.maps"/>
+</queries>
+ ```
+
+
+
 Check out [Example](https://github.com/Yash-Garg/appcheck/blob/develop/example/lib/main.dart).
 
 ## Screenshots
