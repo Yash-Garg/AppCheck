@@ -11,3 +11,7 @@
 
 - Fixed some lint warnings
 - Updated Dart SDK min version to 2.17
+
+## 1.0.5
+
+- Remove QUERY_ALL_PACKAGES permission due to playstore policies (check README for more info)

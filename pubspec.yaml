@@ -1,6 +1,6 @@
 name: appcheck
 description: Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.
-version: 1.0.4
+version: 1.0.5
 homepage: https://github.com/Yash-Garg/appcheck
 
 environment:
