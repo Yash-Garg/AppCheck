@@ -1,6 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.yashgarg.appcheck">
 
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <!-- <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" /> 
+        Each user of this package must decide for themselves. Use this permission or add the known packagenames per queries.
+        Example:
+        <queries>
+            <package android:name="com.google.android.apps.maps"/>
+        </queries>
+    -->
 
 </manifest>
