@@ -21,15 +21,15 @@ First, add `appcheck` as a [dependency in your pubspec.yaml file](https://flutte
 
 
 ## Permissions
- If you want to use the getInstalledApps() function, you need the QUERY_ALL_PACKAGES permission.
+ If you want to use the `getInstalledApps()` function, you need the `QUERY_ALL_PACKAGES` permission.
 
- ```
+ ```xml
 <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
  ```
 
- If you only want to check certain apps and you know the packageName, add them via querie in AndroidManifest.xml.
+ If you only want to check certain apps and you know the packageName, add them via queries in AndroidManifest.xml.
 
- ```
+ ```xml
 <queries>
     <package android:name="com.google.android.apps.maps"/>
 </queries>
