@@ -15,3 +15,7 @@
 ## 1.0.5
 
 - Remove QUERY_ALL_PACKAGES permission due to playstore policies (check README for more info)
+
+## 1.0.6
+
+- Lowered dart sdk constraint to >=2.12.0 from 2.17.0
