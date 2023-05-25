@@ -27,7 +27,6 @@ class _AppCheckExampleState extends State<AppCheckExample> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> getApps() async {
-    List<AppInfo>? installedApps;
 
     if (Platform.isAndroid) {
       const package = "com.google.android.apps.maps";
