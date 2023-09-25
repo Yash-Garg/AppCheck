@@ -66,6 +66,18 @@ class AppCheck {
     return null;
   }
 
+  /// Check if an app is installed with the given [uri] scheme.
+  ///
+  /// Returns true if the app is installed and false if the app is not installed.
+  static Future<bool> isAppInstalled(String uri) async {
+    try {
+      await checkAvailability(uri);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Only for **Android**.
   ///
   /// Get the list of all installed apps, where
