@@ -15,6 +15,7 @@ First, add `appcheck` as a [dependency in your pubspec.yaml file](https://flutte
 ## Methods available
 
 - `checkAvailability(String uri)`
+- `isAppInstalled(String uri)`
 - `getInstalledApps()` (only for **Android**)
 - `isAppEnabled(String uri)` (only for **Android**)
 - `launchApp(String uri)`
