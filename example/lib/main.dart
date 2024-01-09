@@ -4,6 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:appcheck/appcheck.dart';
 
+void main() {
+  runApp(const AppCheckExample());
+}
+
 class AppCheckExample extends StatefulWidget {
   const AppCheckExample({Key? key}) : super(key: key);
 
@@ -27,7 +31,6 @@ class _AppCheckExampleState extends State<AppCheckExample> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> getApps() async {
-
     if (Platform.isAndroid) {
       const package = "com.google.android.apps.maps";
       installedApps = await AppCheck.getInstalledApps();
