@@ -1,3 +1,6 @@
+## 1.5.3
+- Added null check for `appInfo`.
+
 ## 1.5.2
 
 - You need to now make an instance of the class to use the methods, instead of using static methods. Checkout the example in the README for more info.
