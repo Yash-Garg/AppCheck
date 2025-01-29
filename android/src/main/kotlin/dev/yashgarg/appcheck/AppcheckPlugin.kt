@@ -85,13 +85,21 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private fun convertPackageInfoToJson(info: PackageInfo): Map<String, Any> {
         val app: MutableMap<String, Any> = HashMap()
 
-        app["app_name"] =
-            info.applicationInfo.loadLabel(context.packageManager).toString()
+        val appInfo = info.applicationInfo;
+        if (appInfo != null) {
+            app["app_name"] = 
+                appInfo.loadLabel(context.packageManager).toString()
+            app["icon"] = DrawableUtil.drawableToByteArray(appInfo.loadIcon(context.packageManager))
+            app["system_app"] = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+        } else {
+            app["app_name"] = "N/A"
+            app["system_app"] = false
+        }
+    
         app["package_name"] = info.packageName
-        app["version_name"] = info.versionName
-        app["icon"] = DrawableUtil.drawableToByteArray(info.applicationInfo.loadIcon(context.packageManager))
+        app["version_name"] = info.versionName.toString()
         app["version_code"] = getVersionCode(info)
-        app["system_app"] = (info.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+        
         return app
     }
 
