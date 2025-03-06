@@ -19,7 +19,7 @@ class AppInfo {
   final bool? isSystemApp;
   final int? versionCode;
   final Uint8List? icon;
-  
+
   AppInfo({
     required this.packageName,
     this.appName,
