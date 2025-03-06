@@ -1,3 +1,8 @@
+### 1.5.4
+
+- Support for Swift Package Manager on iOS.
+- Misc. updates to `example` app.
+
 ## 1.5.3
 - Added null check for `appInfo`.
 

@@ -4,16 +4,16 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'appcheck'
-  s.version          = '1.0.3'
+  s.version          = '1.5.4'
   s.summary          = 'Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.'
   s.description      = <<-DESC
   Flutter plugin that allows you to check if an app is installed/enabled, launch an app and get the list of installed apps.
                        DESC
   s.homepage         = 'http://github.com/Yash-Garg/Appcheck'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Yash Garg' => 'me@yashgarg.dev' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'appcheck/Sources/appcheck/**/*'
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
 

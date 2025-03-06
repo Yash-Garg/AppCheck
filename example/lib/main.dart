@@ -9,7 +9,7 @@ void main() {
 }
 
 class AppCheckExample extends StatefulWidget {
-  const AppCheckExample({Key? key}) : super(key: key);
+  const AppCheckExample({super.key});
 
   @override
   State<AppCheckExample> createState() => _AppCheckExampleState();
@@ -17,52 +17,51 @@ class AppCheckExample extends StatefulWidget {
 
 class _AppCheckExampleState extends State<AppCheckExample> {
   final appCheck = AppCheck();
+  List<AppInfo> installedApps = [];
 
-  List<AppInfo>? installedApps;
-  List<AppInfo> iOSApps = [
+  final List<AppInfo> iOSApps = [
     AppInfo(appName: "Calendar", packageName: "calshow://"),
     AppInfo(appName: "Facebook", packageName: "fb://"),
-    AppInfo(appName: "Whatsapp", packageName: "whatsapp://"),
+    AppInfo(appName: "WhatsApp", packageName: "whatsapp://"),
   ];
 
   @override
   void initState() {
-    getApps();
     super.initState();
+    getApps();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> getApps() async {
-    if (Platform.isAndroid) {
-      const package = "com.google.android.apps.maps";
-      installedApps = await appCheck.getInstalledApps();
-      debugPrint(installedApps.toString());
+    List<AppInfo>? apps = [];
+    try {
+      if (Platform.isAndroid) {
+        apps = await appCheck.getInstalledApps();
+        apps?.sort(
+          (a, b) =>
+              a.appName!.toLowerCase().compareTo(b.appName!.toLowerCase()),
+        );
 
-      await appCheck.checkAvailability(package).then(
-            (app) => debugPrint(app.toString()),
-          );
+        const package = "com.google.android.apps.maps";
+        final isAvailable = await appCheck.checkAvailability(package);
+        debugPrint("$package available: $isAvailable");
 
-      await appCheck.isAppEnabled(package).then(
-            (enabled) => enabled
-                ? debugPrint('$package enabled')
-                : debugPrint('$package disabled'),
-          );
+        final isEnabled = await appCheck.isAppEnabled(package);
+        debugPrint("$package is ${isEnabled ? 'enabled' : 'disabled'}");
+      } else if (Platform.isIOS) {
+        apps = iOSApps;
 
-      installedApps?.sort(
-        (a, b) => a.appName!.toLowerCase().compareTo(b.appName!.toLowerCase()),
-      );
-    } else if (Platform.isIOS) {
-      // iOS doesn't allow to get installed apps.
-      installedApps = iOSApps;
-
-      await appCheck.checkAvailability("calshow://").then(
-            (app) => debugPrint(app.toString()),
-          );
+        final isAvailable = await appCheck.checkAvailability("calshow://");
+        debugPrint("Calendar available: $isAvailable");
+      }
+    } catch (e) {
+      debugPrint("Error fetching apps: $e");
     }
 
-    setState(() {
-      installedApps = installedApps;
-    });
+    if (mounted) {
+      setState(() {
+        installedApps = apps ?? [];
+      });
+    }
   }
 
   @override
@@ -70,41 +69,41 @@ class _AppCheckExampleState extends State<AppCheckExample> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: const Text('AppCheck Example App')),
-        body: installedApps != null && installedApps!.isNotEmpty
-            ? ListView.builder(
-                itemCount: installedApps!.length,
-                itemBuilder: (context, index) {
-                  final app = installedApps![index];
-
-                  return ListTile(
-                    title: Text(app.appName ?? app.packageName),
-                    subtitle: Text(
-                      (app.isSystemApp ?? false) ? 'System App' : 'User App',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.open_in_new),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        appCheck.launchApp(app.packageName).then((_) {
-                          debugPrint(
-                            "${app.appName ?? app.packageName} launched!",
-                          );
-                        }).catchError((err) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              "${app.appName ?? app.packageName} not found!",
-                            ),
-                          ));
-                          debugPrint(err.toString());
-                        });
-                      },
-                    ),
-                  );
-                },
-              )
-            : const Center(child: Text('No installed apps found!')),
+        appBar: AppBar(title: const Text('AppCheck Example')),
+        body:
+            installedApps.isNotEmpty
+                ? ListView.builder(
+                  itemCount: installedApps.length,
+                  itemBuilder: (context, index) {
+                    final app = installedApps[index];
+                    return ListTile(
+                      title: Text(app.appName ?? app.packageName),
+                      subtitle: Text(
+                        (app.isSystemApp ?? false) ? 'System App' : 'User App',
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.open_in_new),
+                        onPressed: () => _launchApp(app),
+                      ),
+                    );
+                  },
+                )
+                : const Center(child: Text('No installed apps found!')),
       ),
     );
+  }
+
+  Future<void> _launchApp(AppInfo app) async {
+    try {
+      await appCheck.launchApp(app.packageName);
+      debugPrint("${app.appName ?? app.packageName} launched!");
+    } catch (e) {
+      if (!mounted) return; // Ensure the widget is still in the tree
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${app.appName ?? app.packageName} not found!")),
+      );
+      debugPrint("Error launching app: $e");
+    }
   }
 }

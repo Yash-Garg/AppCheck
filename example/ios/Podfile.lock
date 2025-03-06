@@ -1,22 +1,16 @@
 PODS:
-  - appcheck (1.0.3):
-    - Flutter
   - Flutter (1.0.0)
 
 DEPENDENCIES:
-  - appcheck (from `.symlinks/plugins/appcheck/ios`)
   - Flutter (from `Flutter`)
 
 EXTERNAL SOURCES:
-  appcheck:
-    :path: ".symlinks/plugins/appcheck/ios"
   Flutter:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  appcheck: e1ab9d4e03736f03e0401554a134d1ed502d7629
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
 
-PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011
+PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

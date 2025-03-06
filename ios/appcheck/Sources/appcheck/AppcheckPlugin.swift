@@ -1,10 +1,10 @@
 import Flutter
 import UIKit
 
-public class SwiftAppcheckPlugin: NSObject, FlutterPlugin {
+public class AppcheckPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "dev.yashgarg/appcheck", binaryMessenger: registrar.messenger())
-        let instance = SwiftAppcheckPlugin()
+        let instance = AppcheckPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
