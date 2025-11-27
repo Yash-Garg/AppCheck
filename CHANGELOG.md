@@ -1,3 +1,8 @@
+### 1.6.0
+
+- Updated Android dependencies
+- Increased Android minSdk version to 24
+
 ### 1.5.4
 
 - Support for Swift Package Manager on iOS.
