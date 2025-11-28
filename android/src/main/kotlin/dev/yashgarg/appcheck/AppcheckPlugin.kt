@@ -15,6 +15,7 @@ import io.flutter.plugin.common.MethodChannel.*
 import kotlin.collections.*
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
+import android.os.Build.VERSION_CODES.TIRAMISU
 
 /** AppcheckPlugin */
 class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
@@ -63,7 +64,12 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private val installedApps: MutableList<Map<String, Any>>
         get() {
             val packageManager: PackageManager = context.packageManager
-            val packages = packageManager.getInstalledPackages(0)
+            val packages = if (SDK_INT >= TIRAMISU) {
+                packageManager.getInstalledPackages(PackageManager.PackageInfoFlags.of(0L))
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getInstalledPackages(0)
+            }
             val installedApps: MutableList<Map<String, Any>> = ArrayList(packages.size)
             for (pkg in packages) {
                 val map = convertPackageInfoToJson(pkg)
@@ -75,7 +81,12 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private fun getAppPackageInfo(uri: String): PackageInfo? {
         val pm = context.packageManager
         try {
-            return pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES)
+            return if (SDK_INT >= TIRAMISU) {
+                pm.getPackageInfo(uri, PackageManager.PackageInfoFlags.of(PackageManager.GET_ACTIVITIES.toLong()))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES)
+            }
         } catch (e: NameNotFoundException) {
             e.message?.let { Log.e("getAppPackageInfo ($uri)", it) }
         }
@@ -112,7 +123,12 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private fun isAppEnabled(packageName: String, result: Result) {
         val appStatus: Boolean
         try {
-            val appInfo: ApplicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
+            val appInfo: ApplicationInfo = if (SDK_INT >= TIRAMISU) {
+                context.packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0L))
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getApplicationInfo(packageName, 0)
+            }
             appStatus = appInfo.enabled
         } catch (e: NameNotFoundException) {
             result.error("400", "${e.message} $packageName", e)
