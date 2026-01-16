@@ -12,6 +12,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.*
+import io.flutter.plugin.common.StandardMethodCodec
 import kotlin.collections.*
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
@@ -27,7 +28,14 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var context: Context
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dev.yashgarg/appcheck")
+        // Use background task queue to prevent blocking the UI thread
+        val taskQueue = flutterPluginBinding.binaryMessenger.makeBackgroundTaskQueue()
+        channel = MethodChannel(
+            flutterPluginBinding.binaryMessenger,
+            "dev.yashgarg/appcheck",
+            StandardMethodCodec.INSTANCE,
+            taskQueue
+        )
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
     }
@@ -39,7 +47,11 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
                 uriSchema = call.argument<String>("uri").toString()
                 checkAvailability(uriSchema, result)
             }
-            "getInstalledApps" -> result.success(installedApps)
+            "getInstalledApps" -> {
+                val includeIcon = call.argument<Boolean>("includeIcon") ?: true
+                val includeSystemApps = call.argument<Boolean>("includeSystemApps") ?: true
+                result.success(getInstalledApps(includeIcon, includeSystemApps))
+            }
             "isAppEnabled" -> {
                 uriSchema = call.argument<String>("uri").toString()
                 isAppEnabled(uriSchema, result)
@@ -61,22 +73,25 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         result.error("400", "App not found $uri", null)
     }
 
-    private val installedApps: MutableList<Map<String, Any>>
-        get() {
-            val packageManager: PackageManager = context.packageManager
-            val packages = if (SDK_INT >= TIRAMISU) {
-                packageManager.getInstalledPackages(PackageManager.PackageInfoFlags.of(0L))
-            } else {
-                @Suppress("DEPRECATION")
-                packageManager.getInstalledPackages(0)
-            }
-            val installedApps: MutableList<Map<String, Any>> = ArrayList(packages.size)
-            for (pkg in packages) {
-                val map = convertPackageInfoToJson(pkg)
-                installedApps.add(map)
-            }
-            return installedApps
+    private fun getInstalledApps(includeIcon: Boolean, includeSystemApps: Boolean): MutableList<Map<String, Any>> {
+        val packageManager: PackageManager = context.packageManager
+        val packages = if (SDK_INT >= TIRAMISU) {
+            packageManager.getInstalledPackages(PackageManager.PackageInfoFlags.of(0L))
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.getInstalledPackages(0)
         }
+        val installedApps: MutableList<Map<String, Any>> = ArrayList(packages.size)
+        for (pkg in packages) {
+            val appInfo = pkg.applicationInfo
+            val isSystemApp = appInfo != null && (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+            if (!includeSystemApps && isSystemApp) continue
+            
+            val map = convertPackageInfoToJson(pkg, includeIcon)
+            installedApps.add(map)
+        }
+        return installedApps
+    }
     
     private fun getAppPackageInfo(uri: String): PackageInfo? {
         val pm = context.packageManager
@@ -93,14 +108,15 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         return null
     }
 
-    private fun convertPackageInfoToJson(info: PackageInfo): Map<String, Any> {
+    private fun convertPackageInfoToJson(info: PackageInfo, includeIcon: Boolean = true): Map<String, Any> {
         val app: MutableMap<String, Any> = HashMap()
 
-        val appInfo = info.applicationInfo;
+        val appInfo = info.applicationInfo
         if (appInfo != null) {
-            app["app_name"] = 
-                appInfo.loadLabel(context.packageManager).toString()
-            app["icon"] = DrawableUtil.drawableToByteArray(appInfo.loadIcon(context.packageManager))
+            app["app_name"] = appInfo.loadLabel(context.packageManager).toString()
+            if (includeIcon) {
+                app["icon"] = DrawableUtil.drawableToByteArray(appInfo.loadIcon(context.packageManager))
+            }
             app["system_app"] = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
         } else {
             app["app_name"] = "N/A"
@@ -109,7 +125,7 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     
         app["package_name"] = info.packageName
         app["version_name"] = info.versionName.toString()
-        app["version_code"] = getVersionCode(info)
+        app["version_code"] = getVersionCode(info).toInt()
         
         return app
     }

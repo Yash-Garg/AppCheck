@@ -1,3 +1,19 @@
+## 1.7.0
+
+### Performance
+- **Fixed UI blocking**: `getInstalledApps()` no longer freezes the UI. Method channel handlers now run on a background thread using Flutter's `makeBackgroundTaskQueue()`.
+
+### New Features
+- Added `includeIcon` parameter to `getInstalledApps()` - set to `false` for significantly faster performance when icons aren't needed.
+- Added `includeSystemApps` parameter to `getInstalledApps()` - set to `false` to only retrieve user-installed apps.
+
+### Bug Fixes
+- Fixed `versionCode` type mismatch that could cause issues on Android API 28+.
+
+### Breaking Changes
+- Minimum Dart SDK version is now 3.0.0
+- Minimum Flutter version is now 3.10.0
+
 ### 1.6.0
 
 - Updated Android dependencies

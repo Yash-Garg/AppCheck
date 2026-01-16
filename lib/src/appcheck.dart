@@ -7,7 +7,7 @@ class AppCheck {
   final MethodChannel _channel;
 
   AppCheck({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel('dev.yashgarg/appcheck');
+    : _channel = channel ?? const MethodChannel('dev.yashgarg/appcheck');
 
   /// Check if an app is available with the given [uri] scheme.
   ///
@@ -25,8 +25,10 @@ class AppCheck {
 
       return AppInfo.fromMap(app);
     } else if (Platform.isIOS) {
-      bool appAvailable =
-          await _channel.invokeMethod("checkAvailability", args);
+      bool appAvailable = await _channel.invokeMethod(
+        "checkAvailability",
+        args,
+      );
 
       if (!appAvailable) {
         throw PlatformException(code: "", message: "App not found $uri");
@@ -55,9 +57,22 @@ class AppCheck {
   /// Get the list of all installed apps, where
   /// each app has a form like [checkAvailability()].
   ///
+  /// [includeIcon] - Whether to include app icons (default: true).
+  /// Set to false for faster performance when icons aren't needed.
+  ///
+  /// [includeSystemApps] - Whether to include system apps (default: true).
+  /// Set to false to only get user-installed apps.
+  ///
   /// Returns a list of [AppInfo] containing all installed apps data, else returns [null]
-  Future<List<AppInfo>?> getInstalledApps() async {
-    List<dynamic>? apps = await _channel.invokeMethod("getInstalledApps");
+  Future<List<AppInfo>?> getInstalledApps({
+    bool includeIcon = true,
+    bool includeSystemApps = true,
+  }) async {
+    final args = <String, dynamic>{
+      'includeIcon': includeIcon,
+      'includeSystemApps': includeSystemApps,
+    };
+    List<dynamic>? apps = await _channel.invokeMethod("getInstalledApps", args);
     if (apps != null) {
       List<AppInfo> list = [];
       for (var app in apps) {
