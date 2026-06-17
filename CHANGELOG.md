@@ -1,3 +1,16 @@
+## 1.8.0
+
+### Breaking Changes
+
+- Minimum Flutter version is now 3.44.0.
+- Minimum Dart SDK version is now 3.12.0.
+- Minimum iOS deployment target bumped from 9.0 to 12.0.
+
+### Maintenance
+
+- Migrated Android plugin to Flutter's built-in Kotlin (AGP 9 / KGP 2.0+). Removed explicit `kotlin-android` plugin, `kotlin-stdlib` dependency, and `kotlinOptions` block; replaced with the `kotlin { compilerOptions {} }` DSL.
+- Updated iOS podspec version to match pubspec and bumped Swift version to 5.9.
+
 ## 1.7.0
 
 ### Performance
