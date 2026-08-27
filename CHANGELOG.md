@@ -1,3 +1,9 @@
+## 1.8.1
+
+### Bug Fixes
+
+- Fixed deprecation warning for `UIApplication.canOpenURL(_:)`, deprecated in the iOS 27 SDK. The call is now isolated to a dedicated, explicitly-deprecated helper, and `launchApp` opens URLs directly and handles failure via the completion handler instead of pre-flighting with `canOpenURL(_:)`. ([#24](https://github.com/Yash-Garg/appcheck/issues/24))
+
 ## 1.8.0
 
 ### Breaking Changes

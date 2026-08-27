@@ -29,22 +29,31 @@ public class AppcheckPlugin: NSObject, FlutterPlugin {
         guard let url = URL(string: uri) else {
             return false
         }
-        return UIApplication.shared.canOpenURL(url)
+        return AppcheckPlugin.canOpen(url)
     }
 
     public func launchApp(uri: String, result: @escaping FlutterResult) {
-        guard let url = URL(string: uri), checkAvailability(uri: uri) else {
+        guard let url = URL(string: uri) else {
             result(false)
             return
         }
 
-        if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url, options: [:]) { success in
-                result(success)
-            }
-        } else {
-            let success = UIApplication.shared.openURL(url)
+        // Per Apple's guidance, attempt to open the URL directly and handle
+        // failure via the completion handler rather than pre-flighting with
+        // `canOpenURL(_:)`.
+        UIApplication.shared.open(url, options: [:]) { success in
             result(success)
         }
+    }
+
+    // `canOpenURL(_:)` was deprecated in iOS 27 with no direct replacement for
+    // pre-flight availability checks (Apple's guidance to "attempt to open and
+    // handle failure" doesn't apply when callers explicitly want to check
+    // availability without launching, e.g. `checkAvailability`). The call is
+    // isolated here, in a function that is itself marked deprecated, so the
+    // compiler-level deprecation warning stays contained to this one spot.
+    @available(iOS, deprecated: 27.0, message: "canOpenURL has no replacement for availability-only checks; see checkAvailability(uri:).")
+    private static func canOpen(_ url: URL) -> Bool {
+        UIApplication.shared.canOpenURL(url)
     }
 }
